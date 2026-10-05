@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CalmDesk – Focus, reset, reflect, progress</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#EFE9DC;--card:#FBF8F1;--ink:#1D2B24;--mute:#66736B;--green:#1F4A3A;--sage:#8DAA91;--line:#DDD5C3;--on:#F5F1E6;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A16;--card:#1B2721;--ink:#EDE8DA;--mute:#9AA89F;--green:#6FA88B;--line:#2B3A32;--on:#10201A}}
+:root[data-theme="dark"]{--bg:#121A16;--card:#1B2721;--ink:#EDE8DA;--mute:#9AA89F;--green:#6FA88B;--line:#2B3A32;--on:#10201A}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.1;margin:0}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--sage);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 5vw;max-width:1200px;margin:auto}
+.logo{font-family:Fraunces,serif;font-size:22px;font-weight:600;display:flex;gap:8px;align-items:center}
+.logo i{width:26px;height:26px;border-radius:50%;background:var(--green);display:inline-block;position:relative}
+.logo i:after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--bg)}
+nav a{color:var(--mute);text-decoration:none;margin-left:22px;font-size:15px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;max-width:1200px;margin:auto;padding:24px 5vw 70px}
+.hero h1{font-size:clamp(38px,5.4vw,66px);letter-spacing:-.02em}
+.hero p.lead{font-size:19px;color:var(--mute);max-width:46ch;margin:18px 0 26px}
+.loop{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.loop button{padding:10px 18px;border-radius:99px;border:1.5px solid var(--line);font-weight:500}
+.loop button.on{background:var(--green);color:var(--on);border-color:var(--green)}
+.panel{background:var(--card);border-radius:20px;padding:18px 20px;max-width:460px;border:1px solid var(--line)}
+.panel b{display:block;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);font-size:14px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stage{display:flex;justify-content:center}
+.phone{width:320px;height:660px;border-radius:44px;background:#0d1411;padding:10px;box-shadow:0 30px 60px -20px rgba(20,40,30,.45);position:relative}
+.screen{height:100%;border-radius:35px;overflow:hidden;position:relative;background:#F3EEE3;color:#1D2B24;display:flex;flex-direction:column;transition:background .6s}
+.notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#0d1411;border-radius:20px;z-index:5}
+.status{display:flex;justify-content:space-between;padding:12px 24px 0;font-size:12px;font-weight:700;z-index:4}
+.view{flex:1;display:none;flex-direction:column;padding:14px 18px;overflow:auto;position:relative}
+.view.on{display:flex}
+.view h3{font-size:24px;margin:6px 0 4px}
+.sub{font-size:13px;color:#5d6b63;margin:0 0 12px}
+.dark-v{color:#F1EDE0}
+.dark-v .sub{color:#c5d3c8}
+.nav{display:flex;justify-content:space-around;padding:8px 6px 14px;background:#FBF8F1;border-top:1px solid #e3dccb}
+.nav button{font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px;color:#7b867f;padding:4px 6px}
+.nav button svg{width:20px;height:20px}
+.nav button.on{color:#1F4A3A;font-weight:700}
+.dur{display:flex;justify-content:center;gap:6px;margin:2px 0 0}
+.dur button{padding:6px 11px;border-radius:99px;border:1.5px solid rgba(255,255,255,.35);font-size:12px;color:#F1EDE0}
+.dur button.on{background:#F3EEE3;color:#1F4A3A;border-color:#F3EEE3;font-weight:700}
+.ring{position:relative;width:190px;height:190px;margin:10px auto}
+.ring svg{transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .t b{font:600 44px Fraunces,serif}
+.ring .t span{font-size:12px;opacity:.8}
+.ctrl{display:flex;justify-content:center;gap:18px;align-items:center;margin:6px 0}
+.big{width:60px;height:60px;border-radius:50%;background:#F3EEE3;color:#1F4A3A;font-weight:700;font-size:20px}
+.sm{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:12px}
+.btn{background:#1F4A3A;color:#F3EEE3;border-radius:16px;padding:14px;font-weight:700;width:100%;margin-top:auto}
+.tile{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:14px;border:1px solid #e8e1d0;width:100%;text-align:left}
+.tile.done{opacity:.6;text-decoration:line-through}
+.box{width:20px;height:20px;border-radius:6px;border:2px solid #8DAA91;display:grid;place-content:center;font-size:12px;flex:none;color:#fff}
+.done .box,.box.c{background:#1F4A3A;border-color:#1F4A3A}
+.moods{display:flex;justify-content:space-between;margin:8px 0 14px}
+.moods button{display:flex;flex-direction:column;align-items:center;font-size:11px;gap:4px;padding:2px;border-radius:12px}
+.moods span{width:46px;height:46px;border-radius:50%;display:grid;place-content:center;font-size:22px;transition:transform .2s}
+.moods button.on span{transform:scale(1.18);outline:3px solid #1F4A3A}
+.orb{width:150px;height:150px;border-radius:50%;margin:16px auto 6px;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(255,255,255,.25));box-shadow:0 0 50px rgba(255,255,255,.5);transform:scale(.7);display:grid;place-content:center;color:#1F4A3A;font-weight:700;text-align:center;font-size:15px}
+.orb.go{animation:br 8s ease-in-out infinite}
+@keyframes br{0%,100%{transform:scale(.7)}50%{transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.orb.go{animation:none;transform:scale(1)}}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tabs button{flex:1;background:rgba(255,255,255,.88);border-radius:12px;padding:8px 2px;font-size:11px;color:#1D2B24}
+.tabs button.on{background:#1F4A3A;color:#fff}
+.days{display:flex;justify-content:space-between;margin-bottom:12px}
+.days button{width:46px;padding:8px 0;border-radius:14px;font-size:12px;line-height:1.3}
+.days button.on{background:#1F4A3A;color:#fff}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.card{background:#fff;border-radius:14px;padding:12px;border:1px solid #e8e1d0}
+.card small{color:#66736B;font-size:11px}
+.card b{display:block;font:600 24px Fraunces,serif}
+.bars{display:flex;align-items:flex-end;gap:7px;height:70px;margin-top:6px}
+.bars i{flex:1;background:#2E7A55;border-radius:4px 4px 0 0;display:block;min-height:4px}
+.reveal{background:#1F4A3A;color:#F3EEE3;padding:70px 5vw}
+.feat{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.feat h3{font-size:24px;margin-bottom:8px}
+.feat p{margin:0;color:#c5d3c8}
+footer{text-align:center;padding:36px 5vw;color:var(--mute);font-size:14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;transition:transform .3s;font-size:14px;z-index:9}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.feat{grid-template-columns:1fr}nav{display:none}}
+</style>
+</head>
+<body>
+<header><div class="logo"><i></i>CalmDesk</div><nav><a href="#demo">Try it</a><a href="#why">Why it works</a></nav></header>
+
+<main>
+<section class="hero" id="demo">
+ <div>
+  <h1>Study deeper. Feel calmer.</h1>
+  <p class="lead">CalmDesk is a study companion built around one simple loop. Try every step on the phone beside you.</p>
+  <div class="loop" role="tablist" aria-label="App loop">
+   <button data-go="focus" class="on">Focus</button><button data-go="reset">Reset</button><button data-go="check">Reflect</button><button data-go="goals">Goals</button><button data-go="prog">Progress</button>
+  </div>
+  <div class="panel">
+   <b>Presenter controls</b>
+   <div class="row" id="speed"><button class="chip on" data-s="1">Real time</button><button class="chip" data-s="60">Demo speed (60×)</button></div>
+   <div class="row" style="margin-top:10px" id="themes"><button class="chip on" data-t="Nature">Nature</button><button class="chip" data-t="Lo-fi">Lo-fi</button><button class="chip" data-t="Sunset">Sunset</button><button class="chip" data-t="Night">Night</button></div>
+   <div class="row" style="margin-top:10px"><button class="chip" id="mode">Switch light / dark page</button></div>
+  </div>
+ </div>
+ <div class="stage">
+  <div class="phone"><div class="notch"></div>
+   <div class="screen" id="screen">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+
+    <section class="view dark-v on" id="focus">
+     <h3 style="text-align:center">Focus session</h3>
+     <p class="sub" style="text-align:center">Stay in the zone</p>
+     <div class="dur" id="dur" role="group" aria-label="Timer length"><button data-m="15">15 min</button><button data-m="25" class="on">25 min</button><button data-m="45">45 min</button><button data-m="0" id="cust">Custom</button></div>
+     <div class="ring"><svg viewBox="0 0 200 200" width="190" height="190"><circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="8"/><circle id="arc" cx="100" cy="100" r="90" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-dasharray="565.5" stroke-dashoffset="0"/></svg>
+      <div class="t"><b id="clock">25:00</b><span id="clabel">Focus time</span></div></div>
+     <div class="ctrl"><button class="sm" id="snd" aria-label="Change sound">Nature</button><button class="big" id="play" aria-label="Start or pause">▶</button><button class="sm" id="rst" aria-label="Restart">↺</button></div>
+     <button class="tile" style="margin-top:auto" data-go="prog"><span class="box c">▮</span><span style="flex:1">Today's focus<br><b id="sess">3 sessions</b></span>›</button>
+    </section>
+
+    <section class="view dark-v" id="reset">
+     <h3 style="text-align:center">2-minute reset</h3>
+     <p class="sub" style="text-align:center" id="rdesc">Breathe in for 4, out for 4.</p>
+     <div class="orb" id="orb"><span id="otxt">Ready</span></div>
+     <div class="tabs" id="rtabs"><button class="on">Breathing</button><button>Stretch</button><button>Mindfulness</button><button>Gratitude</button></div>
+     <button class="btn" id="rgo" style="background:#F3EEE3;color:#1F4A3A">Start reset</button>
+    </section>
+
+    <section class="view" id="check">
+     <h3>Good afternoon 👋</h3><p class="sub">How are you feeling today?</p>
+     <div class="moods" id="moods">
+      <button><span style="background:#bfe3c3">😄</span>Great</button><button><span style="background:#d3e9b8">🙂</span>Good</button><button><span style="background:#ffe1a8">😐</span>Okay</button><button><span style="background:#ffc9c4">🙁</span>Low</button><button><span style="background:#f6a8a8">😣</span>Stressed</button>
+     </div>
+     <b style="font-size:15px;margin-bottom:8px">Habits</b>
+     <div id="habits"></div>
+     <p class="sub" id="mnote" style="margin-top:auto">Pick a mood to log it.</p>
+    </section>
+
+    <section class="view" id="goals">
+     <h3>Today's goals</h3>
+     <div class="days" id="days"></div>
+     <div id="glist"></div>
+     <button class="btn" id="addg">+ Add goal</button>
+    </section>
+
+    <section class="view" id="prog">
+     <h3>Your progress</h3><p class="sub">This week</p>
+     <div class="card"><small>Focus time</small><b id="ft">12h 30m</b><div class="bars" id="bars"></div></div>
+     <div class="stats"><div class="card"><small>Focus sessions</small><b id="fs">18</b></div><div class="card"><small>Avg. focus time</small><b>32 min</b></div></div>
+     <div class="card"><small>Mood trend</small>
+      <svg viewBox="0 0 240 60" width="100%" height="60"><polyline id="mline" fill="none" stroke="#2E7A55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,45 40,30 80,38 120,20 160,28 200,12 240,18"/></svg></div>
+    </section>
+
+    <nav class="nav" id="nav">
+     <button data-go="focus" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>Focus</button>
+     <button data-go="reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-5-3-8-7-8-11 4 0 7 2 8 5 1-3 4-5 8-5 0 4-3 8-8 11z"/></svg>Reset</button>
+     <button data-go="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 14c2 2 6 2 8 0M9 9h.01M15 9h.01"/></svg>Check-in</button>
+     <button data-go="goals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Goals</button>
+     <button data-go="prog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Progress</button>
+    </nav>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="reveal" id="why">
+ <div class="feat">
+  <div><h3>Minimal by design</h3><p>One timer, one task, no clutter. The interface steps back so your work stays in front.</p></div>
+  <div><h3>Resets that fit a break</h3><p>Two-minute breathing, stretch, mindfulness and gratitude exercises clear your head between sessions.</p></div>
+  <div><h3>Progress you can see</h3><p>Focus time, mood and habits sync across your phone and laptop, so you can see what is working.</p></div>
+ </div>
+</section>
+</main>
+<footer>CalmDesk · Your focus, everywhere.</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let speed=1, sessions=3, mood=null;
+const themes={Nature:"linear-gradient(160deg,#1F4A3A,#0f2a20)",["Lo-fi"]:"linear-gradient(160deg,#4b3f5e,#252033)",Sunset:"linear-gradient(160deg,#b4573a,#5c2a3d)",Night:"linear-gradient(160deg,#17233a,#0a1020)"};
+const sounds={Nature:"Nature","Lo-fi":"Lo-fi",Sunset:"Rain",Night:"Rain"};
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)}
+function go(id){
+ $$(".view").forEach(v=>v.classList.toggle("on",v.id===id));
+ $$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.go===id));
+ $$(".loop button").forEach(b=>b.classList.toggle("on",b.dataset.go===id));
+ const dark=["focus","reset"].includes(id);
+ $("#screen").style.background=dark?themeBg:"#F3EEE3";
+ $(".status").style.color=dark?"#F1EDE0":"#1D2B24";
+}
+let themeBg=themes.Nature;
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(b.dataset.go)});
+
+// Presenter controls
+$("#speed").onclick=e=>{const b=e.target.closest("[data-s]");if(!b)return;speed=+b.dataset.s;$$("#speed .chip").forEach(c=>c.classList.toggle("on",c===b))};
+$("#themes").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;themeBg=themes[b.dataset.t];$("#snd").textContent=sounds[b.dataset.t];
+ $$("#themes .chip").forEach(c=>c.classList.toggle("on",c===b));go($("#reset").classList.contains("on")?"reset":"focus");toast(b.dataset.t+" theme")};
+$("#mode").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--bg").trim()==="#121A16";r.dataset.theme=d?"light":"dark"};
+
+// Focus timer
+let TOTAL=1500, left=TOTAL, run=false, tm;
+$("#dur").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+ let m=+b.dataset.m;
+ if(!m){const v=parseInt(prompt("Focus length in minutes (1–180)",30),10);if(!(v>=1&&v<=180))return toast("Enter a number from 1 to 180");m=v;b.textContent="Custom · "+v+"m"}
+ else $("#cust").textContent="Custom";
+ $$("#dur button").forEach(x=>x.classList.toggle("on",x===b));
+ run=false;clearInterval(tm);TOTAL=left=m*60;$("#clabel").textContent="Focus time";drawTimer();toast("Timer set to "+m+" min")};
+const fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+function drawTimer(){$("#clock").textContent=fmt(Math.ceil(left));$("#arc").style.strokeDashoffset=565.5*(1-left/TOTAL);$("#play").textContent=run?"❚❚":"▶"}
+function tick(){left-=speed*.25;if(left<=0){left=TOTAL;run=false;clearInterval(tm);sessions++;$("#sess").textContent=sessions+" sessions";$("#fs").textContent=sessions+15;$("#clabel").textContent="Session complete 🎉";toast("Session complete. Time for a 2-minute reset.");setTimeout(()=>{$("#clabel").textContent="Focus time"},3000)}drawTimer()}
+$("#play").onclick=()=>{run=!run;clearInterval(tm);if(run){$("#clabel").textContent="Stay with it";tm=setInterval(tick,250)}else $("#clabel").textContent="Paused";drawTimer()};
+$("#rst").onclick=()=>{run=false;clearInterval(tm);left=TOTAL;$("#clabel").textContent="Focus time";drawTimer()};
+$("#snd").onclick=()=>{const o=["Nature","Lo-fi","Rain"];const n=o[(o.indexOf($("#snd").textContent)+1)%3];$("#snd").textContent=n;toast("Sound: "+n)};
+
+// Reset
+const rd={Breathing:"Breathe in for 4, out for 4.",Stretch:"Roll your shoulders and reach tall.",Mindfulness:"Notice 3 things you can hear.",Gratitude:"Think of one thing that went well."};
+$("#rtabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;$$("#rtabs button").forEach(x=>x.classList.toggle("on",x===b));$("#rdesc").textContent=rd[b.textContent]};
+let rt,rleft=120;
+$("#rgo").onclick=()=>{
+ if(rt){clearInterval(rt);rt=null;$("#orb").classList.remove("go");$("#otxt").textContent="Ready";$("#rgo").textContent="Start reset";return}
+ rleft=120;$("#orb").classList.add("go");$("#rgo").textContent="Stop";
+ rt=setInterval(()=>{rleft-=speed;const ph=Math.floor((120-rleft)/4)%2===0?"Breathe in":"Breathe out";$("#otxt").innerHTML=ph+"<br>"+fmt(Math.max(rleft,0));
+  if(rleft<=0){clearInterval(rt);rt=null;$("#orb").classList.remove("go");$("#otxt").textContent="Done";$("#rgo").textContent="Start reset";toast("Reset complete. Nice work.")}},1000)};
+
+// Check-in
+$$("#moods button").forEach((b,i)=>b.onclick=()=>{$$("#moods button").forEach(x=>x.classList.toggle("on",x===b));mood=i;
+ $("#mnote").textContent="Logged: "+b.textContent+". "+(i>2?"Try a 2-minute reset.":"Keep it going.");
+ const pts=$("#mline").getAttribute("points").split(" ").slice(1);pts.push("240,"+(8+i*10));
+ $("#mline").setAttribute("points",pts.map((p,k)=>(k*40)+","+p.split(",")[1]).join(" "))});
+const habits=[["Drank water",1],["Studied",0],["Took a break",1],["Was mindful",0]];
+function drawHabits(){$("#habits").innerHTML=habits.map((h,i)=>`<button class="tile ${h[1]?"":""}" data-h="${i}"><span class="box ${h[1]?"c":""}">${h[1]?"✓":""}</span>${h[0]}</button>`).join("")}
+$("#habits").onclick=e=>{const b=e.target.closest("[data-h]");if(!b)return;habits[b.dataset.h][1]^=1;drawHabits()};drawHabits();
+
+// Goals
+const days=[["Mon",8],["Tue",9],["Wed",10],["Thu",11],["Fri",12]];
+$("#days").innerHTML=days.map((d,i)=>`<button class="${i==1?"on":""}">${d[0]}<br><b>${d[1]}</b></button>`).join("");
+$("#days").onclick=e=>{const b=e.target.closest("button");if(b)$$("#days button").forEach(x=>x.classList.toggle("on",x===b))};
+const goals=[["Maths – Chapter 3",1],["Physics numericals",0],["Edit project video",1],["Workout",0]];
+function drawGoals(){$("#glist").innerHTML=goals.map((g,i)=>`<button class="tile ${g[1]?"done":""}" data-g="${i}"><span class="box">${g[1]?"✓":""}</span>${g[0]}</button>`).join("")}
+$("#glist").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;goals[b.dataset.g][1]^=1;drawGoals();if(goals.every(g=>g[1]))toast("All goals done. Great day!")};
+$("#addg").onclick=()=>{const n=prompt("New goal");if(n){goals.push([n,0]);drawGoals()}};drawGoals();
+
+// Progress
+$("#bars").innerHTML=[30,40,55,90,45,60,100].map(h=>`<i style="height:${h}%"></i>`).join("");
+drawTimer();go("focus");
+</script>
+</body>
+</html>
